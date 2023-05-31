@@ -1,3 +1,3 @@
 # Testing Lighthouse integration with project
 
-Changed some stuff to test Lighthouse
+Changed some stuff to test Lighthouse again!
