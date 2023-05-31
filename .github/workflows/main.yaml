@@ -1,17 +1,21 @@
-name: Audit pull request
-on:
-  pull_request:
-    branches: [main]
-
+name: Lighthouse CI for Netlify sites
+on: pull_request
 jobs:
-  audit:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Audit Netlify deploy preview
-        uses: jakejarvis/lighthouse-action@master
+      - uses: actions/checkout@v3
+      - name: Wait for the Netlify Preview
+        uses: jakepartusch/wait-for-netlify-action@v1.4
+        id: netlify
         with:
-          netlify_site: "lighthouse-demo.netlify.app"
-      - uses: actions/upload-artifact@master
+          site_name: "lighthouse-demo.netlify.app"
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@v10
         with:
-          name: report
-          path: "./report"
+          urls: |
+            ${{ steps.netlify.outputs.url }}/home/
+            ${{ steps.netlify.outputs.url }}/product/
+          budgetPath: ./budget.json
+          uploadArtifacts: true
